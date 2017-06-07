@@ -47,6 +47,12 @@ class Album
     SqlRunner.run(sql)
   end
 
-  
+  def Album.find(id)
+    sql = "SELECT * FROM albums WHERE id = #{id}"
+    result = SqlRunner.run(sql)
+    album_hash = result.first
+    album = Album.new(album_hash)
+    return album
+  end
 
 end
