@@ -2,9 +2,10 @@ require('pg')
 require_relative('db/sql_runner.rb')
 require_relative('albums.rb')
 
-class Artists
+class Artist
 
-  attr_reader :id, :name
+  attr_reader :id
+  attr_accessor  :name
 
   def initialize(options)
     @id = options["id"].to_i()
@@ -16,22 +17,27 @@ class Artists
     @id = SqlRunner.run(sql)[0]["id"].to_i()
   end
 
-  def Artists.all()
+  def Artist.all()
     sql = "SELECT * FROM artists"
     artists = SqlRunner.run(sql)
-    return artists.map{|artist| Artists.new(artist)}
+    return artists.map{|artist| Artist.new(artist)}
   end
 
-  def Artists.delete_all()
+  def Artist.delete_all()
     sql = "DELETE FROM artists"
     SqlRunner.run(sql)
   end
 
-  def artist_albums
-    sql = "SELECT * FROM albums WHERE artists_id = #{@id}"
+  def albums()
+    sql = "SELECT * FROM albums WHERE artist_id = #{@id}"
     result = SqlRunner.run(sql)
-    albums = result.map{ |album| Albums.new(album)}
+    albums = result.map{ |album| Album.new(album)}
     return albums
+  end
+
+  def update()
+    sql = "UPDATE artists SET (name) = ('#{@name}') WHERE id = #{@id}"
+    SqlRunner.run(sql)
   end
 
 end
